@@ -1,0 +1,19 @@
+{
+	"name": "AsyncUtil",
+	"version": "0.0.1",
+	"description": "AsyncUtil",
+	"license": "MIT",
+	"main": "AsyncUtil.js",
+	"keywords": [
+		"express",
+		"soap",
+		"async",
+		"unirest"
+	],
+	"author": "Rex.chen <rexhome7326@gmail.com>",
+	"dependencies": {
+		"async": "^1.5.0",
+		"soap": "^0.11.1",
+		"unirest":"^0.4.2"
+	}
+}
