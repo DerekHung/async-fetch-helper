@@ -68,17 +68,8 @@ AsyncFetchHelper.need(['soap', 'rest']).then(function(soap, rest){
 
 ## AsyncFetchHelper.setting(settings)
 
-	The options we have:
+The options we have:
 	
-	- `apiUrl ` -  If your api have the same domain,your can setting this param
+- `apiUrl ` -  If your api have the same domain,your can setting this param
 	
-	example : if you have two apis that url is `[rest] http://api.com.tw/api1` and `[soap] http://api.com.tw/api2`
-	```javascript
-	// settings
-	settings = {
-		apiUrl : 'http://api.com.tw'
-	};
 	
-	// call api
-	rest('get', '/api1', params),soap(/api2', (client)=>{})
-	```
