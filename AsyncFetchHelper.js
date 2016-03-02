@@ -1,6 +1,6 @@
-import async from 'async';
-import soap from 'soap';
-import unirest from "unirest";
+const async = require('async');
+const soap = require('soap');
+const unirest = require('unirest');
 
 let defaults = {
 	apiUrl : 'http://api.com/services';
@@ -15,7 +15,7 @@ function AsyncFetchHelper(apiType) {
 	self.pool = [];
 	
 	apiType = apiType || [];
-	apiType.map((method) => {
+	apiType.map(function loopApiType(method) {
 		switch(method){
 			case 'rest':
 				self.args.push(_rest);
@@ -99,7 +99,7 @@ function AsyncFetchHelper(apiType) {
 						let newPool = restCallback(result);
 							
 						if(newPool && newPool.length > 0){                                        
-							_childProcess(newPool, (newPoolResult) => {
+							_childProcess(newPool, function childProcessCallback(newPoolResult) {
 								result.childResult = newPoolResult;
 								mainSelf.mainCallback(null, result);
 							});
@@ -122,14 +122,14 @@ function AsyncFetchHelper(apiType) {
 				let createMathod = function(soapClient, methodNameList){
 					let wrap = {};
 					
-					methodNameList.map((methodName) => {
+					methodNameList.map(function loopMethodNameList(methodName) {
 						wrap[methodName] = function(params, returnKey, methodCallback){
 							if(typeof returnKey === 'function'){
 								methodCallback = returnKey;
 								returnKey = '';
 							}
 							
-							soapClient[methodName](params, (clientError, clientResponce) => {
+							soapClient[methodName](params, function soapClientCallback(clientError, clientResponce) {
 								let result = {};
 
 								if(clientResponce){
@@ -148,7 +148,7 @@ function AsyncFetchHelper(apiType) {
 									let newPool = methodCallback(result);
 									
 									if(newPool && newPool.length > 0){
-										_childProcess(newPool, (newPoolResult) => {
+										_childProcess(newPool, function childProcessCallback(newPoolResult) {
 											result.childResult = newPoolResult;
 											mainCallback(null, result);
 										});
