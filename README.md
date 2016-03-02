@@ -82,6 +82,6 @@ settings = {
 
 // call api
 rest('get', '/api1', params),soap(/api2', (client)=>{})
-	```
+```
 	
 	
