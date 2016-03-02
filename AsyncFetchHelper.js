@@ -2,13 +2,39 @@ import async from 'async';
 import soap from 'soap';
 import unirest from "unirest";
 
-let esbUrl = 'http://api.url.com.tw';
+let defaults = {
+	apiUrl : 'http://api.com/services';
+};
+let soapMap = {};
+let userDefinedHandler = {};
 
-function AsyncUtil() {
+function AsyncFetchHelper(apiType) {
 	let self = this;
-	let soapMap = {};
 	
-	function _rest(method, apiUrl, params, returnKey, restCallback){
+	self.args = [];
+	self.pool = [];
+	
+	apiType = apiType || [];
+	apiType.map((method) => {
+		switch(method){
+			case 'rest':
+				self.args.push(_rest);
+				break;
+			case 'soap':
+				self.args.push(_soap);
+				break;
+			case 'thrift':
+				self.args.push(_thrift);
+				break;
+			default:
+				if(typeof userDefinedHandler[method] === 'function' ){
+					self.args.push(userDefinedHandler[method]);
+				}
+				break;
+		}
+	});
+	
+	function _rest(method, url, params, returnKey, restCallback){
 		switch(arguments.length){
 			case 3:
 				if(typeof arguments[2] === 'function'){
@@ -37,12 +63,16 @@ function AsyncUtil() {
 		return function asyncRestItem(asyncCallback){
 			let main = function(mainCallback){
 				let mainSelf = this;
-				let source = /^http.+/.test(apiUrl)?apiUrl:(esbUrl+apiUrl);
+				let source = /^http.+/.test(url)?url:(defaults.apiUrl+url);
 				let request = unirest[method](source);
 				
 				mainSelf.mainCallback = mainCallback;
 				
 				switch(method){
+					case 'get':
+					case 'delete':
+						request.query(params);
+						break;
 					case 'post':
 					case 'put':
 						request.send(params);
@@ -61,10 +91,14 @@ function AsyncUtil() {
 						result = result[returnKey];
 					}
 					
+					if(Array.isArray(result)){
+						result = {currentResult:result};
+					}
+					
 					if(restCallback){
 						let newPool = restCallback(result);
 							
-						if(newPool && newPool.length > 0){					
+						if(newPool && newPool.length > 0){                                        
 							_childProcess(newPool, (newPoolResult) => {
 								result.childResult = newPoolResult;
 								mainSelf.mainCallback(null, result);
@@ -80,9 +114,9 @@ function AsyncUtil() {
 			
 			new main(asyncCallback);
 		};
-	};
+	}
 	
-	function _soap(apiUrl, soapCallback){		
+	function _soap(url, soapCallback){                
 		return function asyncSoapItem(asyncCallback){
 			let main = function(mainCallback){
 				let createMathod = function(soapClient, methodNameList){
@@ -106,6 +140,10 @@ function AsyncUtil() {
 									result = result[returnKey];
 								}
 								
+								if(Array.isArray(result)){
+									result = {currentResult:result};
+								}
+								
 								if(methodCallback){
 									let newPool = methodCallback(result);
 									
@@ -126,15 +164,15 @@ function AsyncUtil() {
 
 					return wrap;
 				};
-				
-				if(!soapMap[apiUrl]){
-					let source = esbUrl+apiUrl+"?wsdl";
-					
+
+				if(!soapMap[url]){
+					let source = defaults.apiUrl+url+"?wsdl";
+
 					soap.createClient(source, function(soapError, soapClient){
-						let key = apiUrl.replace(/\//,'');
+						let key = url.replace(/\//,'');
 						let methodNameList = Object.keys(soapClient[key][key+'HttpSoap11Endpoint']);
 						
-						soapMap[apiUrl] = {
+						soapMap[url] = {
 							client : soapClient,
 							methodNameList : methodNameList
 						};
@@ -143,8 +181,8 @@ function AsyncUtil() {
 						soapCallback(methodList);
 					});
 				}else{
-					let soapClient = soapMap[apiUrl].client;
-					let methodNameList = soapMap[apiUrl].methodNameList;
+					let soapClient = soapMap[url].client;
+					let methodNameList = soapMap[url].methodNameList;
 					let methodList = createMathod(soapClient, methodNameList);
 					soapCallback(methodList);
 				}
@@ -167,55 +205,43 @@ function AsyncUtil() {
 			}
 		});
 	}
-	
-	self.need = function(apiType) {
-		let returnFun = function(){
-			let args = [];
-			let pool = [];
-			
-			this.createNeed = function(){
-				apiType = apiType || [];
-				apiType.map((method) => {
-					switch(method){
-						case 'rest':
-							args.push(_rest);
-							break;
-						case 'soap':
-							args.push(_soap);
-							break;
-						case 'thrift':
-							args.push(_thrift);
-							break;
-					}
-				});
-			};
-			
-			this.then = function(callback){
-				pool = callback.apply(this, args);
-				return this;
-			};
-			
-			this.end = function(callback){
-				async.parallel(pool, function asyncFinalCallback(asyncError, asyncResults){
-					pool = [];
+}
 
-					if(asyncError){
-						callback({error: asyncError});
-					}else{
-						callback(asyncResults);
-					}
-				});
-			};
-			
-			this.createNeed();
-		};
-		
-		return new returnFun();
-	};
+AsyncFetchHelper.prototype.then = function(callback){
+	let self = this;
 	
-	self.getSoapMap = function(){
-		return soapMap;
-	};
+	self.pool = callback.apply(self, self.args);
+	return self;
 };
 
-export default new AsyncUtil();
+AsyncFetchHelper.prototype.end = function(callback){
+	let self = this;
+	
+	async.parallel(self.pool, function asyncFinalCallback(asyncError, asyncResults){
+		self.pool.length = 0;
+
+		if(asyncError){
+			callback({error: asyncError});
+		}else{
+			callback(asyncResults);
+		}
+	});
+};
+
+AsyncFetchHelper.need = function(apiTypeList) {
+	return new AsyncFetchHelper(apiTypeList);
+};
+
+AsyncFetchHelper.register = function(apiType, handler){
+	if(!userDefinedHandler[apiType] && typeof handler() === 'function'){
+		userDefinedHandler[apiType] = handler;
+	}
+};
+
+AsyncFetchHelper.setting = function(setting){
+	if(typeof setting === 'object'){
+		defaults = Object.assign({}, defaults, setting);
+	}
+};
+
+export default AsyncFetchHelper;

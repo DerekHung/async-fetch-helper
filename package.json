@@ -1,19 +1,37 @@
 {
-	"name": "AsyncUtil",
-	"version": "0.0.1",
-	"description": "AsyncUtil",
-	"license": "MIT",
-	"main": "AsyncUtil.js",
-	"keywords": [
-		"express",
-		"soap",
-		"async",
-		"unirest"
-	],
-	"author": "Rex.chen <rexhome7326@gmail.com>",
-	"dependencies": {
-		"async": "^1.5.0",
-		"soap": "^0.11.1",
-		"unirest":"^0.4.2"
-	}
+  "name": "async fetch helper",
+  "version": "0.0.1",
+  "description": "async fetch helper",
+  "license": "MIT",
+  "main": "AsyncFetchHelper.js",
+  "keywords": [
+    "express",
+    "soap",
+    "async",
+    "unirest",
+    "fetch",
+    "data",
+    "util",
+    "service",
+    "rest",
+    "kao",
+    "api"
+  ],
+  "author": "rexhome7326",
+  "dependencies": {
+    "async": "^1.5.0",
+    "soap": "^0.11.1",
+    "unirest": "^0.4.2"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rexhome7326/AsyncUtil.git"
+  },
+  "bugs": {
+    "url": "https://github.com/rexhome7326/AsyncUtil/issues"
+  },
+  "homepage": "https://github.com/rexhome7326/AsyncUtil#readme"
 }
