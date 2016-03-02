@@ -123,13 +123,13 @@ function AsyncFetchHelper(apiType) {
 					let wrap = {};
 					
 					methodNameList.map((methodName) => {
-						wrap[methodName] = function(args, returnKey, methodCallback){
+						wrap[methodName] = function(params, returnKey, methodCallback){
 							if(typeof returnKey === 'function'){
 								methodCallback = returnKey;
 								returnKey = '';
 							}
 							
-							soapClient[methodName](args, (clientError, clientResponce) => {
+							soapClient[methodName](params, (clientError, clientResponce) => {
 								let result = {};
 
 								if(clientResponce){
