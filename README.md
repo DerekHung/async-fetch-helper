@@ -99,7 +99,7 @@ rest('get', '/api1', params),soap('/api2', (client)=>{})
 # soap(url, soapCallback)
 
 - `url` - _String_; api url
-- `soapCallback` - _Function_; This function will get soap client, and method wrapper
+- `soapCallback` - _Function_; This function will get soap client, and `method wrapper`
 
 	### method wrapper(params, returnKey, methodCallback)
 	

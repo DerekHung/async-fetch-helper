@@ -1,9 +1,11 @@
 {
-  "name": "async fetch helper",
+  "name": "async-fetch-helper",
   "version": "0.0.1",
-  "description": "async fetch helper",
-  "license": "MIT",
+  "description": "AsyncFetchHelper is wrapper for async that using unirest or soap to fetch data with less code",
   "main": "AsyncFetchHelper.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
   "keywords": [
     "express",
     "soap",
@@ -17,21 +19,19 @@
     "kao",
     "api"
   ],
-  "author": "rexhome7326",
-  "dependencies": {
-    "async": "^1.5.0",
-    "soap": "^0.11.1",
-    "unirest": "^0.4.2"
-  },
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/rexhome7326/async-fetch-helper.git"
   },
+  "author": "Rex Chen <rexhome7326@gmail.com> (https://github.com/rexhome7326)",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/rexhome7326/async-fetch-helper/issues"
+  },
+  "dependencies": {
+    "async": "^1.5.0",
+    "soap": "^0.11.1",
+    "unirest": "^0.4.2"
   },
   "homepage": "https://github.com/rexhome7326/async-fetch-helper#readme"
 }
