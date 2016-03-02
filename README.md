@@ -30,7 +30,7 @@ AsyncFetchHelper.need(['soap', 'rest']).then(function(soap, rest){
 })
 ```
 
-# Api
+# AsyncFetchHelper Api
 
 ## AsyncFetchHelper.need(apiTypeList)
 
@@ -40,7 +40,7 @@ AsyncFetchHelper.need(['soap', 'rest']).then(function(soap, rest){
 		
 	### then(callback)
 	
-	- `callback` -  The function "then" will apply the api type you need, and it must return an array that about the api request settings
+	- `callback` -  _Function_; The function "then" will apply the api type you need, and it must return an array that about the api request settings
 	
 	```javascript
 	then(function(rest, soap){
@@ -50,7 +50,7 @@ AsyncFetchHelper.need(['soap', 'rest']).then(function(soap, rest){
 	
 	### end(callback)
 	
-	- `callback` - The function will get all api response using array
+	- `callback` - _Function_; The function will get all api response using array
 	
 	```javascript
 	end(function(result){
@@ -68,9 +68,11 @@ AsyncFetchHelper.need(['soap', 'rest']).then(function(soap, rest){
 
 ## AsyncFetchHelper.setting(settings)
 
+- `settings ` -  _Object_;
+
 The options we have:
 	
-- `apiUrl ` -  If your api have the same domain,your can setting this param
+- `apiUrl ` -  _String_; If your api have the same domain,your can setting this param
 
 example : if you have two apis that url is `[rest] http://api.com.tw/api1` and `[soap] http://api.com.tw/api2`
 
@@ -81,7 +83,27 @@ settings = {
 };
 
 // call api
-rest('get', '/api1', params),soap(/api2', (client)=>{})
+rest('get', '/api1', params),soap('/api2', (client)=>{})
 ```
+
+# AsyncFetchHelper method
+
+# rest(method, url, params, returnKey, restCallback)
+
+- `method` - _String_; Request type (GET, PUT, POST, etc...)
+- `url` - _String_; api url
+- `params` - _Object_; _Optional_; Request params, if request type is get or delete, it will be query uri, or it will be request body
+- `returnKey` - _String_; _Optional_; Return value of key at first level in Result 
+- `restCallback` - _Function_; _Optional_; This function will get current request result, and it is like function `then` that must return an array that about the api request settings
+
+# soap(url, soapCallback)
+
+- `url` - _String_; api url
+- `soapCallback` - _Function_; This function will get soap client, and method wrapper
+
+	### method wrapper(params, returnKey, methodCallback)
 	
+	- `params` - _Object_; _Optional_; Request params
+	- `returnKey` - _String_; _Optional_; Return value of key at first level in Result 
+	- `restCallback` - _Function_; _Optional_; This function will get current request result, and it is like function `then` that must return an array that about the api request settings
 	
