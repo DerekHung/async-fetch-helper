@@ -38,7 +38,7 @@ AsyncFetchHelper.need(['soap', 'rest']).then(function(soap, rest){
 
 	The method will return constructor of AsyncFetchHelper.
 		
-	### `then(callback)
+	### then(callback)
 	
 	- `callback` -  The function "then" will apply the api type you need, and it must return an array that about the api request settings
 	
