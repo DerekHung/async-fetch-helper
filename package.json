@@ -28,10 +28,10 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/rexhome7326/AsyncUtil.git"
+    "url": "git+https://github.com/rexhome7326/async-fetch-helper.git"
   },
   "bugs": {
-    "url": "https://github.com/rexhome7326/AsyncUtil/issues"
+    "url": "https://github.com/rexhome7326/async-fetch-helper/issues"
   },
-  "homepage": "https://github.com/rexhome7326/AsyncUtil#readme"
+  "homepage": "https://github.com/rexhome7326/async-fetch-helper#readme"
 }
