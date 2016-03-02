@@ -1,9 +1,11 @@
+"use strict";
+
 const async = require('async');
 const soap = require('soap');
 const unirest = require('unirest');
 
 let defaults = {
-	apiUrl : 'http://api.com/services';
+	apiUrl : 'http://api.com/services'
 };
 let soapMap = {};
 let userDefinedHandler = {};
