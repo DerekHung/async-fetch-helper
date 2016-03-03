@@ -245,5 +245,4 @@ AsyncFetchHelper.setting = function(setting){
 		defaults = Object.assign({}, defaults, setting);
 	}
 };
-
-export default AsyncFetchHelper;
+module.exports = AsyncFetchHelper;
