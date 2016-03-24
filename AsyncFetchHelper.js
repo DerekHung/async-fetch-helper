@@ -85,7 +85,7 @@ function AsyncFetchHelper(apiType) {
 				request.end(function resultHandler(restResponse){
 					let result = {};
 					
-					if(restResponse){
+					if(restResponse && restResponse.hasOwnProperty('body')){
 						result = restResponse.body;
 					}
 					
@@ -134,7 +134,7 @@ function AsyncFetchHelper(apiType) {
 							soapClient[methodName](params, function soapClientCallback(clientError, clientResponce) {
 								let result = {};
 
-								if(clientResponce){
+								if(clientResponce && clientResponce.hasOwnProperty('return')){
 									result = JSON.parse(clientResponce.return);
 								}
 								
@@ -219,15 +219,20 @@ AsyncFetchHelper.prototype.then = function(callback){
 AsyncFetchHelper.prototype.end = function(callback){
 	let self = this;
 	
-	async.parallel(self.pool, function asyncFinalCallback(asyncError, asyncResults){
-		self.pool.length = 0;
+	try{
+		async.parallel(self.pool, function asyncFinalCallback(asyncError, asyncResults){
+			self.pool.length = 0;
 
-		if(asyncError){
-			callback({error: asyncError});
-		}else{
-			callback(asyncResults);
-		}
-	});
+			if(asyncError){
+				callback({error: asyncError});
+			}else{
+				callback(asyncResults);
+			}
+		});
+	}catch(e){
+		self.pool.length = 0;
+		callback({error: e.message});
+	}	
 };
 
 AsyncFetchHelper.need = function(apiTypeList) {
