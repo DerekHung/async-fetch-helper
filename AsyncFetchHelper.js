@@ -36,27 +36,35 @@ function AsyncFetchHelper(apiType) {
 		}
 	});
 	
-	function _rest(method, url, params, returnKey, restCallback){
+	function _rest(method, url, params, headers, returnKey, restCallback){
+		if(!method || !url || !params){
+			throw new Error("method and url and params in rest function are necessary!");
+			return;
+		}
 		switch(arguments.length){
-			case 3:
-				if(typeof arguments[2] === 'function'){
-					restCallback = arguments[2];
-					params = {};
+			case 4:
+				if(typeof arguments[3] === 'function'){
+					restCallback = arguments[3];
+					headers = {};
 					returnKey = '';
-				}else if(typeof arguments[2] === 'string'){
-					returnKey = arguments[2];
-					params = {};
+				}else if(typeof arguments[3] === 'string'){
+					returnKey = arguments[3];
+					headers = {};
 					restCallback = null;
 				}
 				break;
 				
-			case 4:
-				if(typeof arguments[3] === 'function'){
-					restCallback = arguments[3];
-					
-					if(typeof arguments[2] === 'string'){
-						returnKey = arguments[2];
-						params = {};
+			case 5:
+				if(typeof arguments[3] === 'string'){
+					restCallback = arguments[4];
+					returnKey = arguments[3];
+					headers = {};
+				}else if(typeof arguments[3] === 'object'){
+					if(typeof arguments[4] === 'function'){
+						restCallback = arguments[4];
+						returnKey = '';
+					}else if(typeof arguments[4] === 'string'){
+						restCallback = null;
 					}
 				}
 				break;
@@ -67,6 +75,8 @@ function AsyncFetchHelper(apiType) {
 				let mainSelf = this;
 				let source = /^http.+/.test(url)?url:(defaults.apiUrl+url);
 				let request = unirest[method](source);
+				
+				request.headers(headers);
 				
 				mainSelf.mainCallback = mainCallback;
 				
@@ -118,7 +128,11 @@ function AsyncFetchHelper(apiType) {
 		};
 	}
 	
-	function _soap(url, soapCallback){                
+	function _soap(url, soapCallback){         
+		if(!method || !soapCallback){
+			throw new Error("Url and soapCallback in soap function are necessary!");
+			return;
+		}       
 		return function asyncSoapItem(asyncCallback){
 			let main = function(mainCallback){
 				let createMathod = function(soapClient, methodNameList){
@@ -126,6 +140,11 @@ function AsyncFetchHelper(apiType) {
 					
 					methodNameList.map(function loopMethodNameList(methodName) {
 						wrap[methodName] = function(params, returnKey, methodCallback){
+							if(!params){
+								throw new Error("params in function '" + methodName + "'  of soap client is necessary!");
+								return;
+							}      
+							
 							if(typeof returnKey === 'function'){
 								methodCallback = returnKey;
 								returnKey = '';
