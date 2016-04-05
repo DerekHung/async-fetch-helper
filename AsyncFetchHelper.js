@@ -129,7 +129,7 @@ function AsyncFetchHelper(apiType) {
 	}
 	
 	function _soap(url, soapCallback){         
-		if(!method || !soapCallback){
+		if(!url || !soapCallback){
 			throw new Error("Url and soapCallback in soap function are necessary!");
 			return;
 		}       
