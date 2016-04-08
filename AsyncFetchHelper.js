@@ -154,7 +154,12 @@ function AsyncFetchHelper(apiType) {
 								let result = {};
 
 								if(clientResponce && clientResponce.hasOwnProperty('return')){
-									result = JSON.parse(clientResponce.return);
+									try {
+										result = JSON.parse(clientResponce.return);	
+									} catch(err) {
+										result = clientResponce.return;
+									}
+									
 								}
 								
 								if(returnKey && result.hasOwnProperty(returnKey)){
