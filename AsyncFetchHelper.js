@@ -238,6 +238,8 @@ function AsyncFetchHelper(settings) {
 					break;
 			}
 		});
+		
+		return self;
 	}
 	
 	_asyncFetchHelper();
