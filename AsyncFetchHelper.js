@@ -3,38 +3,24 @@
 const async = require('async');
 const soap = require('soap');
 const unirest = require('unirest');
-
-let defaults = {
-	apiUrl : 'http://api.com/services'
-};
 let soapMap = {};
 let userDefinedHandler = {};
 
-function AsyncFetchHelper(apiType) {
+function AsyncFetchHelper(settings) {
 	let self = this;
+	let defaults = {
+		apiUrl : 'http://api.com/services'
+	};
 	
 	self.args = [];
 	self.pool = [];
+	self.need = need;
 	
-	apiType = apiType || [];
-	apiType.map(function loopApiType(method) {
-		switch(method){
-			case 'rest':
-				self.args.push(_rest);
-				break;
-			case 'soap':
-				self.args.push(_soap);
-				break;
-			case 'thrift':
-				self.args.push(_thrift);
-				break;
-			default:
-				if(typeof userDefinedHandler[method] === 'function' ){
-					self.args.push(userDefinedHandler[method]);
-				}
-				break;
+	function _asyncFetchHelper(){
+		if(typeof settings === 'object'){
+			defaults = Object.assign({}, defaults, settings);
 		}
-	});
+	}
 	
 	function _rest(method, url, params, headers, returnKey, restCallback){
 		if(!method || !url || !params){
@@ -192,7 +178,7 @@ function AsyncFetchHelper(apiType) {
 				};
 
 				if(!soapMap[url]){
-					let source = defaults.apiUrl+url+"?wsdl";
+					let source = /^http/.test(url) ? url : defaults.apiUrl+url+"?wsdl";
 
 					soap.createClient(source, function(soapError, soapClient){
 						let key = url.replace(/\//,'');
@@ -231,6 +217,30 @@ function AsyncFetchHelper(apiType) {
 			}
 		});
 	}
+	
+	function need(apiType) {
+		apiType = apiType || [];
+		apiType.map(function loopApiType(method) {
+			switch(method){
+				case 'rest':
+					self.args.push(_rest);
+					break;
+				case 'soap':
+					self.args.push(_soap);
+					break;
+				case 'thrift':
+					self.args.push(_thrift);
+					break;
+				default:
+					if(typeof userDefinedHandler[method] === 'function' ){
+						self.args.push(userDefinedHandler[method]);
+					}
+					break;
+			}
+		});
+	}
+	
+	_asyncFetchHelper();
 }
 
 AsyncFetchHelper.prototype.then = function(callback){
@@ -259,19 +269,10 @@ AsyncFetchHelper.prototype.end = function(callback){
 	}	
 };
 
-AsyncFetchHelper.need = function(apiTypeList) {
-	return new AsyncFetchHelper(apiTypeList);
-};
-
 AsyncFetchHelper.register = function(apiType, handler){
 	if(!userDefinedHandler[apiType] && typeof handler() === 'function'){
 		userDefinedHandler[apiType] = handler;
 	}
 };
 
-AsyncFetchHelper.setting = function(setting){
-	if(typeof setting === 'object'){
-		defaults = Object.assign({}, defaults, setting);
-	}
-};
 module.exports = AsyncFetchHelper;
