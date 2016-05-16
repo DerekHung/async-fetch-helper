@@ -36,7 +36,7 @@ function AsyncFetchHelper(settings) {
 				case 'rest':
 				case 'soap':
 				case 'thrift':
-					var methodFun = require('./lib/' + method);
+					var methodFun = require('./lib/' + method)(defaults);
 					self.args.push(methodFun);
 					break;
 				default:
