@@ -1,7 +1,7 @@
 "use strict";
 
 module.exports = function wrap(defaults){
-	return function thrift(){
+	return function thriftCreator(){
 		return false;
 	};
 };

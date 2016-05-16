@@ -4,7 +4,7 @@ var soap = require('soap');
 var soapMap = {};
 
 module.exports = function wrap(defaults){
-	return function soap(url, soapCallback){         
+	return function soapCreator(url, soapCallback){         
 		if(!url || !soapCallback){
 			throw new Error("Url and soapCallback in soap function are necessary!");
 			return;

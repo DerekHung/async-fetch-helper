@@ -3,7 +3,7 @@
 var unirest = require('unirest');
 
 module.exports = function wrap(defaults){
-	return function rest(method, url, params, headers, returnKey, restCallback){
+	return function restCreator(method, url, params, headers, returnKey, restCallback){
 		if(!method || !url || !params){
 			throw new Error("method and url and params in rest function are necessary!");
 			return;
