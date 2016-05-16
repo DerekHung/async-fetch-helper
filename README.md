@@ -29,13 +29,13 @@ asyncFetchHelper.need(['soap', 'rest']).then(function(soap, rest){
 })
 ```
 
-# AsyncFetchHelper protptype Api
+# AsyncFetchHelper prototype Api
 
 ## need(apiTypeList)
 
 - `apiTypeList` - _ArrayList_; api type (rest, soap, etc...)
 
-	The method will return constructor of AsyncFetchHelper  at follow.
+### The method will return constructor of AsyncFetchHelper  at follow.
 		
 ## then(callback)
 
@@ -83,7 +83,7 @@ var settings = {
 	apiUrl : 'http://api.com.tw'
 };
 
-var asyncFetchHelper = new AsyncFetchHelper(settings;
+var asyncFetchHelper = new AsyncFetchHelper(settings);
 ```
 
 # AsyncFetchHelper method
