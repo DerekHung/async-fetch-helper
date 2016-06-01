@@ -137,7 +137,7 @@ function AsyncItem(defaults, _childProcess){
 module.exports = function wrap(defaults, _childProcess){
 	return function soapCreator(url, soapCallback){         
 		if(!url || !soapCallback){
-			return itemError(500, "Server Error", new Error('Url and soapCallback in soap function are necessary!');
+			return itemError(500, "Server Error", new Error('Url and soapCallback in soap function are necessary!'));
 		}else{
 			return new AsyncItem(defaults, _childProcess)(url, soapCallback);
 		}    
