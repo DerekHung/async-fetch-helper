@@ -87,6 +87,8 @@ function AsyncItem(defaults, _childProcess){
 												}else{
 													return itemSuccess(result)(asyncCallback);
 												}
+											}else if(result !== 'undefined' && result.hasOwnProperty("issuerList")){
+												return itemSuccess(result)(asyncCallback);
 											}else{
 												return itemError(500, 'Server Error', new Error('Something happen at methodResponse.return'))(asyncCallback);
 											}
