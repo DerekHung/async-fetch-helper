@@ -36,7 +36,7 @@ function AsyncFetchHelper(settings) {
 				case 'rest':
 				case 'soap':
 				case 'thrift':
-					var methodFun = require('./lib/' + method + 'Creator')(defaults);
+					var methodFun = require('./lib/' + method + 'Creator')(defaults, _childProcess);
 					self.args.push(methodFun);
 					break;
 				default:
