@@ -93,6 +93,8 @@ function AsyncItem(defaults, _childProcess){
 							}else{
 								return itemSuccess(result)(asyncCallback);
 							}
+						}else if(result !== 'undefined' && result.hasOwnProperty("Result") && result.hasOwnProperty("Report")){
+							return itemSuccess(result)(asyncCallback);
 						}else{
 							return itemError(500, 'Server Error', new Error('Something happen at restResponse.body'))(asyncCallback);
 						}
