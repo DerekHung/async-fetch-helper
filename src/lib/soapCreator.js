@@ -32,9 +32,16 @@ function AsyncItem(defaults, _childProcess){
 						if(!params){
 							return itemError(500, 'Server Error', new Error("Params in function '" + methodName + "'  of soap client is necessary!"))(asyncCallback);
 						}else{
+							var returnAll = false;
+							
 							if(typeof returnKey === 'function'){
 								methodCallback = returnKey;
 								returnKey = '';
+							}
+							
+							if(params.hasOwnProperty('returnAll')){
+								returnAll = params.returnAll;
+								delete params.returnAll;
 							}
 							
 							soapClient[methodName](params, function soapMathodCallback(methodError, methodResponse) {
@@ -90,7 +97,11 @@ function AsyncItem(defaults, _childProcess){
 											}else if(result !== 'undefined' && result.hasOwnProperty("issuerList")){
 												return itemSuccess(result)(asyncCallback);
 											}else{
-												return itemError(500, 'Server Error', new Error('Something happen at methodResponse.return'))(asyncCallback);
+												if(returnAll === true){
+													return itemSuccess(result)(asyncCallback);
+												}else{
+													return itemError(500, 'Server Error', new Error('Something happen at methodResponse.return'))(asyncCallback);
+												}
 											}
 										}else{
 											return itemError(500, 'Server Error', new Error('Something happen at methodResponse: no return'))(asyncCallback);

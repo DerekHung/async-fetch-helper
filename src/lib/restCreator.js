@@ -24,6 +24,12 @@ function AsyncItem(defaults, _childProcess){
 	return function main(method, url, params, headers, returnKey, restCallback){
 		var source = /^http.+/.test(url) ? url : (defaults.apiUrl + url);
 		var request = null;
+		var returnAll = false;
+		
+		if(params.hasOwnProperty('returnAll')){
+			returnAll = params.returnAll;
+			delete params.returnAll;
+		}
 		
 		function createRequest(){
 			request = unirest[method](source);
@@ -96,7 +102,11 @@ function AsyncItem(defaults, _childProcess){
 						}else if(result !== 'undefined' && result.hasOwnProperty("Result") && result.hasOwnProperty("Report")){
 							return itemSuccess(result)(asyncCallback);
 						}else{
-							return itemError(500, 'Server Error', new Error('Something happen at restResponse.body'))(asyncCallback);
+							if(returnAll === true){
+								return itemSuccess(result)(asyncCallback);
+							}else{
+								return itemError(500, 'Server Error', new Error('Something happen at restResponse.body'))(asyncCallback);
+							}
 						}
 					}else{
 						return itemError(500, 'Server Error', new Error('Something happen at restResponse: no body'))(asyncCallback);
