@@ -40,7 +40,7 @@ function AsyncItem(defaults, _childProcess){
 							}
 							
 							if(params.hasOwnProperty('returnAll')){
-								returnAll = ['undefined', null, false, 'false', 0, '0', ].indexOf(params.returnAll) === -1;
+								returnAll = ['undefined', null, false, 'false', 0, '0'].indexOf(params.returnAll) === -1;
 								delete params.returnAll;
 							}
 							
