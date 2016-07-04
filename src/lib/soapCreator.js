@@ -1,7 +1,8 @@
 "use strict";
 
+var http = require('http');
 var soap = require('soap');
-var soapMap = {};
+var agent = null;
 
 function itemError(code, msg, stack){
 	return function asyncSoapItem(asyncCallback){
@@ -110,44 +111,35 @@ function AsyncItem(defaults, _childProcess){
 										return itemError(500, 'Server Error', eAll)(asyncCallback);
 									}
 								}	
-							});
+							}, {agent: agent});
 						}
 					};
 				});
 
 				return wrap;
 			}
+
+			var source = /^http/.test(url) ? url : defaults.apiUrl+url+"?wsdl";
 			
-			if(!soapMap[url]){
-				var source = /^http/.test(url) ? url : defaults.apiUrl+url+"?wsdl";
-				
-				soap.createClient(source, function(soapError, soapClient){
-					if(soapError){
-						return itemError(500, 'Server Error', soapError)(asyncCallback);
-					}else{
-						var key = url.replace(/\//,'');
-						var methodNameList = Object.keys(soapClient[key][key+'HttpSoap11Endpoint']);
-						
-						soapMap[url] = {
-							client : soapClient,
-							methodNameList : methodNameList
-						};
-						
-						var methodList = createMathod(soapClient, methodNameList);
-						soapCallback(methodList);
-					}
-				});
-			}else{
-				var soapClient = soapMap[url].client;
-				var methodNameList = soapMap[url].methodNameList;
-				var methodList = createMathod(soapClient, methodNameList);
-				soapCallback(methodList);
-			}
+			soap.createClient(source, function(soapError, soapClient){
+				if(soapError){
+					return itemError(500, 'Server Error', soapError)(asyncCallback);
+				}else{
+					var key = url.replace(/\//,'');
+					var methodNameList = Object.keys(soapClient[key][key+'HttpSoap11Endpoint']);
+					var methodList = createMathod(soapClient, methodNameList);
+					soapCallback(methodList);
+				}
+			});
 		};
 	}
 };
 
-module.exports = function wrap(defaults, _childProcess){
+module.exports = function wrap(defaults, poolSetting, _childProcess){
+	if(poolSetting && !agent){
+		agent = new http.Agent(poolSetting);
+	}
+	
 	return function soapCreator(url, soapCallback){         
 		if(!url || !soapCallback){
 			return itemError(500, "Server Error", new Error('Url and soapCallback in soap function are necessary!'));

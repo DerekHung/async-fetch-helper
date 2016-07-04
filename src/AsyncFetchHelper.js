@@ -2,6 +2,7 @@
 
 var async = require('async');
 var userDefinedHandler = {};
+var connectionPool = {};
 
 function AsyncFetchHelper(settings) {
 	var self = this;
@@ -36,7 +37,13 @@ function AsyncFetchHelper(settings) {
 				case 'rest':
 				case 'soap':
 				case 'thrift':
-					var methodFun = require('./lib/' + method + 'Creator')(defaults, _childProcess);
+					var poolSetting = null;
+					
+					if(connectionPool.hasOwnProperty(method){
+						poolSetting = connectionPool[method];
+					}
+					
+					var methodFun = require('./lib/' + method + 'Creator')(defaults, poolSetting, _childProcess);
 					self.args.push(methodFun);
 					break;
 				default:
@@ -83,6 +90,10 @@ AsyncFetchHelper.register = function(apiType, handler){
 	if(!userDefinedHandler[apiType] && typeof handler() === 'function'){
 		userDefinedHandler[apiType] = handler;
 	}
+};
+
+AsyncFetchHelper.setConnectionPool = function(setting){
+	connectionPool = setting;
 };
 
 module.exports = AsyncFetchHelper;

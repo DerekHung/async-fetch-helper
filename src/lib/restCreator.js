@@ -1,6 +1,8 @@
 "use strict";
 
+var http = require('http');
 var unirest = require('unirest');
+var agent = null;
 
 function itemError(code, msg, stack){
 	return function asyncRestItem(asyncCallback){
@@ -33,6 +35,7 @@ function AsyncItem(defaults, _childProcess){
 		
 		function createRequest(){
 			request = unirest[method](source);
+			request.options.agent = agent;
 			
 			if(Object.keys(headers).length > 0){
 				request.headers(headers);
@@ -125,7 +128,11 @@ function AsyncItem(defaults, _childProcess){
 	};
 }
 
-module.exports = function wrap(defaults, _childProcess){
+module.exports = function wrap(defaults, poolSetting, _childProcess){
+	if(poolSetting && !agent){
+		agent = new http.Agent(poolSetting);
+	}
+	
 	return function creator(method, url, params, headers, returnKey, restCallback){
 		if(!method || !url || !params){
 			return itemError(500, 'Server Error', new Error('Method, url and params in rest function are necessary!'));
