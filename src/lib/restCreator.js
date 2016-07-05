@@ -37,12 +37,12 @@ function AsyncItem(defaults, _childProcess){
 			request = unirest[method](source);
 			request.options.agent = agent;
 			
+			if(headers.hasOwnProperty('cookies')){
+				request.options.headers.cookie = headers.cookies;
+				delete headers.cookies;
+			}
+			
 			if(Object.keys(headers).length > 0){
-				if(headers.hasOwnProperty('cookies')){
-					request.cookie(headers.cookies);
-					delete headers.cookies;
-				}
-				
 				request.headers(headers);
 			}
 		}
