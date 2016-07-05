@@ -1,4 +1,4 @@
-# Async Fetch Helper
+# Async Fetch Helper 2.6.0
 
 
 AsyncFetchHelper is wrapper for [async](https://www.npmjs.com/package/async) 
@@ -14,7 +14,8 @@ $ npm install async-fetch-helper --save
 
 ```javascript
 var AsyncFetchHelper = require('async-fetch-helper');
-var asyncFetchHelper = new AsyncFetchHelper();
+var initSettings = {};
+var asyncFetchHelper = new AsyncFetchHelper(initSettings);
 
 asyncFetchHelper.need(['soap', 'rest']).then(function(soap, rest){
 	return [
@@ -29,13 +30,47 @@ asyncFetchHelper.need(['soap', 'rest']).then(function(soap, rest){
 })
 ```
 
+# AsyncFetchHelper initial - setting
+
+- `settings ` -  _Object_;
+
+The options we have:
+	
+- `apiUrl ` -  _String_; If your api have the same domain,your can setting this param
+- `connectionPool ` -  _Object_; Set http agent object here
+
+example : if you have two apis that url is `[rest] http://api.com.tw/api1` and `[soap] http://api.com.tw/api2`
+
+```javascript
+// settings
+var initSettings = {
+	apiUrl : 'http://api.com.tw,
+	connectionPool: {
+		rest : { keepAlive: true, keepAliveMsecs: 600000 , maxSockets:5, maxFreeSockets: 5},
+		soap : { keepAlive: true, keepAliveMsecs: 600000 , maxSockets:5, maxFreeSockets: 5}
+	}
+};
+```
+
+# AsyncFetchHelper initial - new function
+
+```javascript
+var AsyncFetchHelper = require('async-fetch-helper');
+var initSettings = {something : "setting at here, please view 'AsyncFetchHelper initial - setting'"};
+var asyncFetchHelper = new AsyncFetchHelper(initSettings);
+```
+
 # AsyncFetchHelper prototype Api
 
 ## need(apiTypeList)
 
 - `apiTypeList` - _ArrayList_; api type (rest, soap, etc...)
 
-### The method will return constructor of AsyncFetchHelper  at follow.
+```javascript
+need(['soap', 'rest'])
+```
+
+### The method will return constructor of AsyncFetchHelper at follow.
 		
 ## then(callback)
 
@@ -66,27 +101,19 @@ end(function(result){
 - `handler` - _Function_; Other method for call api defined by user
 
 	This method will add your handler to method options of need, so you can call your handler by `need(['youApiTypeName'])`
-
-# AsyncFetchHelper setting
-
-- `settings ` -  _Object_;
-
-The options we have:
 	
-- `apiUrl ` -  _String_; If your api have the same domain,your can setting this param
+## AsyncFetchHelper.setConnectionPool(settings)
 
-example : if you have two apis that url is `[rest] http://api.com.tw/api1` and `[soap] http://api.com.tw/api2`
+- `settings` - _Object_;  Set http agent object here
 
 ```javascript
-// settings
-var settings = {
-	apiUrl : 'http://api.com.tw'
-};
-
-var asyncFetchHelper = new AsyncFetchHelper(settings);
+{
+	rest : { keepAlive: true, keepAliveMsecs: 600000 , maxSockets:5, maxFreeSockets: 5},
+	soap : { keepAlive: true, keepAliveMsecs: 600000 , maxSockets:5, maxFreeSockets: 5}
+}
 ```
 
-# AsyncFetchHelper method
+# AsyncFetchHelper methods by function need()
 
 # rest(method, url, params, returnKey, restCallback)
 

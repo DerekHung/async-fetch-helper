@@ -68,15 +68,15 @@ function AsyncItem(defaults, _childProcess){
 					if(typeof restResponse !== 'undefined' && restResponse.hasOwnProperty('body')){
 						result = restResponse.body;
 						
-						if(result !== 'undefined' && result.hasOwnProperty("error")){
+						if(result !== 'undefined' && result.hasOwnProperty("error") && result.error !== ""){
 							return itemError(500, result.message, result.exception)(asyncCallback);
-						}else if(result !== 'undefined' && result.hasOwnProperty("warning")){
+						}else if(result !== 'undefined' && result.hasOwnProperty("warning") && result.warning !== ""){
 							return itemSuccess({
 								response:{
 									warning: result.warning
 								}
 							})(asyncCallback);
-						}else if(result !== 'undefined' && result.hasOwnProperty("response")){
+						}else if(result !== 'undefined' && result.hasOwnProperty("response") && result.response !== ""){
 							//get special key at first floor
 							if(returnKey && typeof result !== 'undefined' && result.hasOwnProperty(returnKey)){
 								result = result[returnKey];
@@ -102,7 +102,7 @@ function AsyncItem(defaults, _childProcess){
 							}else{
 								return itemSuccess(result)(asyncCallback);
 							}
-						}else if(result !== 'undefined' && result.hasOwnProperty("Result") && result.hasOwnProperty("Report")){
+						}else if(result !== 'undefined' && result.hasOwnProperty("Result") && result.hasOwnProperty("Report") && result.Result !== "" && result.Report !== ""){
 							return itemSuccess(result)(asyncCallback);
 						}else{
 							if(returnAll === true){

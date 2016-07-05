@@ -17,6 +17,10 @@ function AsyncFetchHelper(settings) {
 	function _asyncFetchHelper(){
 		if(typeof settings === 'object'){
 			defaults = Object.assign({}, defaults, settings);
+			
+			if(defaults.hasOwnProperty('connectionPool') && (defaults.connectionPool.hasOwnProperty('rest')||defaults.connectionPool.hasOwnProperty('soap'))){
+				connectionPool = defaults.connectionPool;
+			}
 		}
 	}
 	
@@ -39,7 +43,7 @@ function AsyncFetchHelper(settings) {
 				case 'thrift':
 					var poolSetting = null;
 					
-					if(connectionPool.hasOwnProperty(method){
+					if( connectionPool.hasOwnProperty(method) ){
 						poolSetting = connectionPool[method];
 					}
 					
