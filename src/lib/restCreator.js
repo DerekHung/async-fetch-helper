@@ -38,6 +38,11 @@ function AsyncItem(defaults, _childProcess){
 			request.options.agent = agent;
 			
 			if(Object.keys(headers).length > 0){
+				if(headers.hasOwnProperty('cookies')){
+					request.cookie(headers.cookies);
+					delete headers.cookies;
+				}
+				
 				request.headers(headers);
 			}
 		}

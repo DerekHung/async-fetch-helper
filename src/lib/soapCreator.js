@@ -25,7 +25,7 @@ function itemSuccess(result){
 function AsyncItem(defaults, _childProcess){
 	return function main(url, soapCallback){
 		return function proxy(asyncCallback){
-			function createMathod(soapClient, methodNameList){
+			function createMathod(soapClientName, soapClient, methodNameList){
 				var wrap = {};
 				
 				methodNameList.map(function loopMethodNameList(methodName) {
@@ -125,9 +125,9 @@ function AsyncItem(defaults, _childProcess){
 				if(soapError){
 					return itemError(500, 'Server Error', soapError)(asyncCallback);
 				}else{
-					var key = url.replace(/\//,'');
-					var methodNameList = Object.keys(soapClient[key][key+'HttpSoap11Endpoint']);
-					var methodList = createMathod(soapClient, methodNameList);
+					var soapClientName = url.replace(/\//,'');
+					var methodNameList = Object.keys(soapClient[soapClientName][soapClientName+'HttpSoap11Endpoint']);
+					var methodList = createMathod(soapClientName, soapClient, methodNameList);
 					soapCallback(methodList);
 				}
 			});
