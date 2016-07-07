@@ -34,6 +34,12 @@ function AsyncItem(defaults, _childProcess){
 							return itemError(500, 'Server Error', new Error("Params in function '" + methodName + "'  of soap client is necessary!"))(asyncCallback);
 						}else{
 							var returnAll = false;
+							var defaultParams = Object.keys(soapClient.wsdl.definitions.messages[methodName].parts).reduce(function(newObj, value, index){
+								newObj[value] = '';
+								return newObj;
+							}, {});
+							
+							params = deepAssign(defaultParams, params);
 							
 							if(typeof returnKey === 'function'){
 								methodCallback = returnKey;
