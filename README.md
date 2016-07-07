@@ -1,4 +1,4 @@
-# Async Fetch Helper 2.8.0
+# Async Fetch Helper 2.8.1
 
 
 AsyncFetchHelper is wrapper for [async](https://www.npmjs.com/package/async) 

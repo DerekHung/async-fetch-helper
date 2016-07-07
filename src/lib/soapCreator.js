@@ -2,6 +2,7 @@
 
 var http = require('http');
 var soap = require('soap');
+var deepAssign = require('deep-assign');
 var agent = null;
 
 function itemError(code, msg, stack){
