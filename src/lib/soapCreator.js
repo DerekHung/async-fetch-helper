@@ -36,7 +36,13 @@ function AsyncItem(defaults, _childProcess){
 						}else{
 							var returnAll = false;
 							var defaultParams = Object.keys(soapClient.wsdl.definitions.messages[methodName].parts).reduce(function(newObj, value, index){
-								newObj[value] = '';
+								var paramName = value;
+								
+								if(/\[\]/.test(paramName)){
+									paramName = paramName.replace('[]','')
+								}
+								
+								newObj[paramName] = '';
 								return newObj;
 							}, {});
 							
