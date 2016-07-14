@@ -39,10 +39,12 @@ function AsyncItem(defaults, _childProcess){
 								var paramName = value;
 								
 								if(/\[\]/.test(paramName)){
-									paramName = paramName.replace('[]','')
+									paramName = paramName.replace('[]','');
+									newObj[paramName] = [];
+								} else {
+									newObj[paramName] = '';	
 								}
-								
-								newObj[paramName] = '';
+
 								return newObj;
 							}, {});
 							
