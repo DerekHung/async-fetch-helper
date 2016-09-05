@@ -1,7 +1,7 @@
 {
   "name": "async-fetch-helper",
   "version": "2.8.4",
-  "description": "AsyncFetchHelper is wrapper for async that using unirest or soap to fetch data with less code",
+  "description": "AsyncFetchHelper is wrapper for async that using unirest or soap to fetch data with less code ",
   "main": "./src/AsyncFetchHelper.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
