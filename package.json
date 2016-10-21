@@ -1,6 +1,6 @@
 {
   "name": "async-fetch-helper",
-  "version": "2.8.4",
+  "version": "2.8.5",
   "description": "AsyncFetchHelper is wrapper for async that using unirest or soap to fetch data with less code ",
   "main": "./src/AsyncFetchHelper.js",
   "scripts": {
@@ -29,10 +29,10 @@
     "url": "https://github.com/rexhome7326/async-fetch-helper/issues"
   },
   "dependencies": {
-    "async": "1.5.2",
-    "deep-assign": "2.0.0",
-    "soap": "0.15.0",
-    "unirest": "0.5.0"
+    "async": "^1.5.2",
+    "deep-assign": "^2.0.0",
+    "soap": "^0.15.0",
+    "unirest": "^0.5.0"
   },
   "homepage": "https://github.com/rexhome7326/async-fetch-helper#readme"
 }
