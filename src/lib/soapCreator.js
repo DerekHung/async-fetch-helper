@@ -77,7 +77,7 @@ function AsyncItem(defaults, _childProcess){
 
 											//get response
 											if(result !== 'undefined' && result.hasOwnProperty("error") && result.error !== ""){
-												return itemError(500, result.message, result.exception)(asyncCallback);
+												return itemError(500, result.error.message, result.error.exception)(asyncCallback);
 											}else if(result !== 'undefined' && result.hasOwnProperty("warning") && result.warning !== ""){
 												return itemSuccess({
 													response:{
