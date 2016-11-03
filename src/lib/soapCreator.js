@@ -116,7 +116,7 @@ function AsyncItem(defaults, _childProcess){
 												if(returnAll === true){
 													return itemSuccess(result)(asyncCallback);
 												}else{
-													return itemError(500, 'Server Error', new Error('Something happen at methodResponse.return'))(asyncCallback);
+													return itemError(500, 'Server Error', new Error('Something happen at methodResponse.return : '+ result.message))(asyncCallback);
 												}
 											}
 										}else{

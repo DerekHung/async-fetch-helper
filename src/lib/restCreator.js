@@ -74,7 +74,7 @@ function AsyncItem(defaults, _childProcess){
 						result = restResponse.body;
 						
 						if(result !== 'undefined' && result.hasOwnProperty("error") && result.error !== ""){
-							return itemError(500, result.message, result.exception)(asyncCallback);
+							return itemError(500, result.error.message, result.error.exception)(asyncCallback);
 						}else if(result !== 'undefined' && result.hasOwnProperty("warning") && result.warning !== ""){
 							return itemSuccess({
 								response:{
@@ -113,7 +113,7 @@ function AsyncItem(defaults, _childProcess){
 							if(returnAll === true){
 								return itemSuccess(result)(asyncCallback);
 							}else{
-								return itemError(500, 'Server Error', new Error('Something happen at restResponse.body'))(asyncCallback);
+								return itemError(500, 'Server Error', new Error('Something happen at restResponse.body : '+ result.message))(asyncCallback);
 							}
 						}
 					}else{
