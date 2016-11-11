@@ -2,7 +2,6 @@
 
 var http = require('http');
 var soap = require('soap');
-var deepAssign = require('deep-assign');
 var agent = null;
 
 function itemError(code, msg, stack){
@@ -48,7 +47,7 @@ function AsyncItem(defaults, _childProcess){
 								return newObj;
 							}, {});
 
-							params = deepAssign(defaultParams, params);
+							params = Object.assign({}, defaultParams, params);
 
 							if(typeof returnKey === 'function'){
 								methodCallback = returnKey;
