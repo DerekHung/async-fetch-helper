@@ -5,16 +5,16 @@ var userDefinedHandler = {};
 var connectionPool = {};
 
 function AsyncFetchHelper(settings) {
-	var self = this;
-	var defaults = {
-		apiUrl : 'http://api.com/services'
-	};
-	
-	self.args = [];
-	self.pool = [];
-	self.need = need;
-	
-	function _asyncFetchHelper(){
+	function _asyncFetchHelper(settings){
+		var defaults = {
+			apiUrl : 'http://api.com/services'
+		};
+		
+		var self = this;
+		self.args = [];
+		self.pool = [];
+		self.need = need;
+		
 		if(typeof settings === 'object'){
 			defaults = Object.assign({}, defaults, settings);
 			
@@ -22,73 +22,83 @@ function AsyncFetchHelper(settings) {
 				connectionPool = defaults.connectionPool;
 			}
 		}
-	}
-	
-	function _childProcess(pool, callback){
-		async.parallel(pool, function asyncFinalCallback(asyncError, asyncResults){
-			if(asyncError){
-				callback({error: asyncError});
-			}else{
-				callback(asyncResults);
-			}
-		});
-	}
-	
-	function need(apiType) {
-		apiType = apiType || [];
-		apiType.map(function loopApiType(method) {
-			switch(method){
-				case 'rest':
-				case 'soap':
-				case 'thrift':
-					var poolSetting = null;
-					
-					if( connectionPool.hasOwnProperty(method) ){
-						poolSetting = connectionPool[method];
-					}
-					
-					var methodFun = require('./lib/' + method + 'Creator')(defaults, poolSetting, _childProcess);
-					self.args.push(methodFun);
-					break;
-				default:
-					if(typeof userDefinedHandler[method] === 'function' ){
-						self.args.push(userDefinedHandler[method]);
-					}
-					break;
-			}
-		});
+
+		return self;
 		
+		function _childProcess(pool, callback){
+			async.parallel(pool, function asyncFinalCallback(asyncError, asyncResults){
+				if(asyncError){
+					callback({error: asyncError});
+				}else{
+					callback(asyncResults);
+				}
+			});
+		}
+		
+		function reset(){
+			self.args = [];
+			self.pool = [];
+		}
+		
+		function need(apiType) {
+			reset();
+			
+			apiType = apiType || [];
+			apiType.map(function loopApiType(method) {
+				switch(method){
+					case 'rest':
+					case 'soap':
+					case 'thrift':
+						var poolSetting = null;
+						
+						if( connectionPool.hasOwnProperty(method) ){
+							poolSetting = connectionPool[method];
+						}
+						
+						var methodFun = require('./lib/' + method + 'Creator')(defaults, poolSetting, _childProcess);
+						self.args.push(methodFun);
+						break;
+					default:
+						if(typeof userDefinedHandler[method] === 'function' ){
+							self.args.push(userDefinedHandler[method]);
+						}
+						break;
+				}
+			});
+
+			return self;
+		}
+	}
+		
+	_asyncFetchHelper.prototype.then = function then(callback){
+		var self = this;
+		
+		self.pool = callback.apply(self, self.args);
+
 		return self;
 	}
 	
-	_asyncFetchHelper();
-}
+	_asyncFetchHelper.prototype.end = function end(callback){
+		var self = this;
+		
+		try{
+			async.parallel(self.pool, function asyncFinalCallback(asyncError, asyncResults){
+				self.pool.length = 0;
 
-AsyncFetchHelper.prototype.then = function(callback){
-	var self = this;
-	
-	self.pool = callback.apply(self, self.args);
-	return self;
-};
-
-AsyncFetchHelper.prototype.end = function(callback){
-	var self = this;
-	
-	try{
-		async.parallel(self.pool, function asyncFinalCallback(asyncError, asyncResults){
+				if(asyncError){
+					callback({error: asyncError});
+				}else{
+					callback(asyncResults);
+				}
+			});
+		}catch(e){
 			self.pool.length = 0;
-
-			if(asyncError){
-				callback({error: asyncError});
-			}else{
-				callback(asyncResults);
-			}
-		});
-	}catch(e){
-		self.pool.length = 0;
-		callback({error: e.message});
-	}	
-};
+			callback({error: e.message});
+		}	
+	}
+	
+	return new _asyncFetchHelper(settings);
+}
 
 AsyncFetchHelper.register = function(apiType, handler){
 	if(!userDefinedHandler[apiType] && typeof handler() === 'function'){
