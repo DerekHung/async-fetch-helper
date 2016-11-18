@@ -44,7 +44,10 @@ function AsyncFetchHelper(settings) {
 			reset();
 			
 			apiType = apiType || [];
-			apiType.map(function loopApiType(method) {
+			
+			for(var i = 0; i < apiType.length; i++){
+				var method = apiType[i];
+				
 				switch(method){
 					case 'rest':
 					case 'soap':
@@ -64,7 +67,7 @@ function AsyncFetchHelper(settings) {
 						}
 						break;
 				}
-			});
+			}
 
 			return self;
 		}
