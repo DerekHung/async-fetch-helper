@@ -24,7 +24,7 @@ function itemSuccess(result){
 
 function AsyncItem(defaults, _childProcess){
 	return function main(method, url, params, headers, returnKey, restCallback){
-		var source = /^http.+/.test(url) ? url : (defaults.apiUrl + url);console.log(source);
+		var source = /^http.+/.test(url) ? url : (defaults.apiUrl + url);//console.log(source);
 		var request = null;
 		var returnAll = false;
 		
@@ -172,7 +172,7 @@ module.exports = function wrap(defaults, poolSetting, _childProcess){
 						break;
 				}
 				
-				console.log(url)
+				//console.log(url)
 				
 				return new AsyncItem(defaults, _childProcess)(method, url, params, headers, returnKey, restCallback);
 			}catch(e){
