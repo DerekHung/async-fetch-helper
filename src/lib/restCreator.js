@@ -1,8 +1,10 @@
 "use strict";
 
 var http = require('http');
+//var httpProxy = require('http-proxy');
 var unirest = require('unirest');
 var agent = null;
+//var proxy = httpProxy.createProxyServer({});
 
 function itemError(code, msg, stack){
 	return function asyncRestItem(asyncCallback){
@@ -61,6 +63,12 @@ function AsyncItem(defaults, _childProcess){
 					
 				default:
 					break;
+			}
+		}
+		
+		function useProxy(){
+			if(defaults.proxy !== null && defaults.proxy !== undefined){
+				request.proxy(defaults.proxy);
 			}
 		}
 		
@@ -128,6 +136,7 @@ function AsyncItem(defaults, _childProcess){
 		return function proxy(asyncCallback){
 			createRequest();
 			setRequestParams();
+			useProxy();
 			requestEnd(asyncCallback);
 		};
 	};

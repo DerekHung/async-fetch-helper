@@ -7,7 +7,8 @@ var connectionPool = {};
 function AsyncFetchHelper(settings) {
 	function _asyncFetchHelper(settings){
 		var defaults = {
-			apiUrl : 'http://api.com/services'
+			apiUrl : 'http://api.com/services',
+			proxy : null
 		};
 		
 		var self = this;
