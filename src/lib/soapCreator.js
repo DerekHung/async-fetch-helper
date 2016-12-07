@@ -8,7 +8,7 @@ function itemError(code, msg, stack){
 	return function asyncSoapItem(asyncCallback){
 		var returnResult= {
 			errorCode: code,
-			errorMsg: msg,
+			errorMsg: msg + " - " + stack.message,
 			errorStack: stack
 		};
 		return asyncCallback(null, returnResult);

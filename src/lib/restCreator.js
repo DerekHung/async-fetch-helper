@@ -10,7 +10,7 @@ function itemError(code, msg, stack){
 	return function asyncRestItem(asyncCallback){
 		var returnResult= {
 			errorCode: code,
-			errorMsg: msg,
+			errorMsg: msg + " - " + stack.message,
 			errorStack: stack
 		};
 		return asyncCallback(null, returnResult);
