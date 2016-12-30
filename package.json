@@ -1,6 +1,6 @@
 {
   "name": "async-fetch-helper",
-  "version": "2.10.1",
+  "version": "2.11.0",
   "description": "AsyncFetchHelper is wrapper for async that using unirest or soap to fetch data with less code ",
   "main": "./src/AsyncFetchHelper.js",
   "scripts": {

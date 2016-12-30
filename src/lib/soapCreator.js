@@ -4,12 +4,13 @@ var http = require('http');
 var soap = require('soap');
 var agent = null;
 
-function itemError(code, msg, stack){
+function itemError(code, msg, stack, info){
 	return function asyncSoapItem(asyncCallback){
 		var returnResult= {
 			errorCode: code,
 			errorMsg: msg + " - " + stack.message,
-			errorStack: stack
+			errorStack: stack.stack,
+			errorInfo: info || {}
 		};
 		return asyncCallback(null, returnResult);
 	};
@@ -31,7 +32,9 @@ function AsyncItem(defaults, _childProcess){
 				methodNameList.map(function loopMethodNameList(methodName) {
 					wrap[methodName] = function(params, returnKey, methodCallback){
 						if(!params){
-							return itemError(500, 'Server Error', new Error("Params in function '" + methodName + "'  of soap client is necessary!"))(asyncCallback);
+							return itemError(500, 'Server Error', new Error("Params in function '" + methodName + "'  of soap client is necessary!"), {
+								url:url, params:{}, methodName:methodName, result:{}
+							})(asyncCallback);
 						}else{
 							var returnAll = false;
 							var defaultParams = Object.keys(soapClient.wsdl.definitions.messages[methodName].parts).reduce(function(newObj, value, index){
@@ -61,7 +64,9 @@ function AsyncItem(defaults, _childProcess){
 
 							soapClient[methodName](params, function soapMathodCallback(methodError, methodResponse) {
 								if(methodError){
-									return itemError(500, 'Server Error', methodError)(asyncCallback);
+									return itemError(500, 'Server Error', methodError, {
+										url:url, params:params, methodName:methodName, result:{}
+									})(asyncCallback);
 								}else{
 									var result = {};
 
@@ -75,15 +80,17 @@ function AsyncItem(defaults, _childProcess){
 											}
 
 											//get response
-											if(result !== 'undefined' && result.hasOwnProperty("error") && result.error !== ""){
-												return itemError(500, result.error.message, result.error.exception)(asyncCallback);
+											if(result !== undefined && result !== 'undefined' && result.hasOwnProperty("error") && result.error !== ""){
+												return itemError(500, result.error.message, result.error.exception, {
+													url:url, params:params, methodName:methodName, result:result
+												})(asyncCallback);
 											}else if(result !== 'undefined' && result.hasOwnProperty("warning") && result.warning !== ""){
 												return itemSuccess({
 													response:{
 														warning: result.warning
 													}
 												})(asyncCallback);
-											}else if(result !== 'undefined' && result.hasOwnProperty("response") && result.response !== ""){
+											}else if(result !== undefined && result !== 'undefined' && result.hasOwnProperty("response") && result.response !== ""){
 												//get special key at first floor
 												if(returnKey && result.hasOwnProperty(returnKey)){
 													result = result[returnKey];
@@ -109,20 +116,26 @@ function AsyncItem(defaults, _childProcess){
 												}else{
 													return itemSuccess(result)(asyncCallback);
 												}
-											}else if(result !== 'undefined' && result.hasOwnProperty("issuerList") && result.issuerList !== ""){
+											}else if(result !== undefined && result !== 'undefined' && result.hasOwnProperty("issuerList") && result.issuerList !== ""){
 												return itemSuccess(result)(asyncCallback);
 											}else{
 												if(returnAll === true){
 													return itemSuccess(result)(asyncCallback);
 												}else{
-													return itemError(500, 'Server Error', new Error('Something happen at methodResponse.return : '+ result.message))(asyncCallback);
+													return itemError(500, 'Server Error', new Error('Something happen at methodResponse.return : '+ result.message), {
+														url:url, params:params, methodName:methodName, result:result
+													})(asyncCallback);
 												}
 											}
 										}else{
-											return itemError(500, 'Server Error', new Error('Something happen at methodResponse: no return'))(asyncCallback);
+											return itemError(500, 'Server Error', new Error('Something happen at methodResponse: no return'), {
+												url:url, params:params, methodName:methodName, result:result
+											})(asyncCallback);
 										}
 									}catch(eAll){
-										return itemError(500, 'Server Error', eAll)(asyncCallback);
+										return itemError(500, 'Server Error', eAll, {
+											url:url, params:params, methodName:methodName, result:result
+										})(asyncCallback);
 									}
 								}
 							}, {agent: agent});
