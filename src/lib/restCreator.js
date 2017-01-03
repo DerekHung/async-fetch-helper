@@ -11,7 +11,7 @@ function itemError(code, msg, stack, info){
 		var returnResult= {
 			errorCode: code,
 			errorMsg: msg + " - " + stack.message,
-			errorStack: stack.stack,
+			errorStack: stack.stack || stack.exception,
 			errorInfo: info || {}
 		};
 		return asyncCallback(null, returnResult);
@@ -83,7 +83,7 @@ function AsyncItem(defaults, _childProcess){
 						result = restResponse.body;
 						
 						if(result !== undefined && result !== 'undefined' && result.hasOwnProperty("error") && result.error !== ""){
-							return itemError(500, result.error.message, result.error.exception, {
+							return itemError(500, 'Server Error', result.error, {
 								method:method, url:url, params:params, headers:headers, result:result
 							})(asyncCallback);
 						}else if(result !== undefined && result !== 'undefined' && result.hasOwnProperty("warning") && result.warning !== ""){
