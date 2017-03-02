@@ -44,10 +44,10 @@ example : if you have two apis that url is `[rest] http://api.com.tw/api1` and `
 ```javascript
 // settings
 var initSettings = {
-	apiUrl : 'http://api.com.tw,
-	connectionPool: {
-		rest : { keepAlive: true, keepAliveMsecs: 600000 , maxSockets:5, maxFreeSockets: 5},
-		soap : { keepAlive: true, keepAliveMsecs: 600000 , maxSockets:5, maxFreeSockets: 5}
+	"apiUrl" : "http://api.com.tw",
+	"connectionPool": {
+		"rest" : { "keepAlive": true, "keepAliveMsecs": 600000 , "maxSockets":5, "maxFreeSockets": 5},
+		"soap" : { "keepAlive": true, "keepAliveMsecs": 600000 , "maxSockets":5, "maxFreeSockets": 5}
 	}
 };
 ```
