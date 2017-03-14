@@ -130,14 +130,22 @@ function AsyncItem(defaults, _childProcess){
 							}
 						}
 					}else{
-						return itemError(500, 'Server Error', new Error('Something happen at restResponse: no body'), {
+						if(returnAll === true){
+							return itemSuccess(result)(asyncCallback);
+						}else{
+							return itemError(500, 'Server Error', new Error('Something happen at restResponse: no body'), {
+								method:method, url:url, params:params, headers:headers, result:result
+							})(asyncCallback);
+						}
+					}
+				}catch(eAll){
+					if(returnAll === true){
+						return itemSuccess(result)(asyncCallback);
+					}else{
+						return itemError(500, 'Server Error', eAll, {
 							method:method, url:url, params:params, headers:headers, result:result
 						})(asyncCallback);
 					}
-				}catch(eAll){
-					return itemError(500, 'Server Error', eAll, {
-						method:method, url:url, params:params, headers:headers, result:result
-					})(asyncCallback);
 				}
 			});
 		}

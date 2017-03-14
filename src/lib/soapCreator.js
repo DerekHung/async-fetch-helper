@@ -128,14 +128,22 @@ function AsyncItem(defaults, _childProcess){
 												}
 											}
 										}else{
-											return itemError(500, 'Server Error', new Error('Something happen at methodResponse: no return'), {
+											if(returnAll === true){
+												return itemSuccess(result)(asyncCallback);
+											}else{
+												return itemError(500, 'Server Error', new Error('Something happen at methodResponse: no return'), {
+													url:url, params:params, methodName:methodName, result:result
+												})(asyncCallback);
+											}
+										}
+									}catch(eAll){
+										if(returnAll === true){
+											return itemSuccess(result)(asyncCallback);
+										}else{
+											return itemError(500, 'Server Error', eAll, {
 												url:url, params:params, methodName:methodName, result:result
 											})(asyncCallback);
 										}
-									}catch(eAll){
-										return itemError(500, 'Server Error', eAll, {
-											url:url, params:params, methodName:methodName, result:result
-										})(asyncCallback);
 									}
 								}
 							}, {agent: agent});
