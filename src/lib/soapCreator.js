@@ -64,9 +64,15 @@ function AsyncItem(defaults, _childProcess){
 
 							soapClient[methodName](params, function soapMathodCallback(methodError, methodResponse) {
 								if(methodError){
-									return itemError(500, 'Server Error', methodError, {
-										url:url, params:params, methodName:methodName, result:methodResponse.body
-									})(asyncCallback);
+									try{
+										return itemError(500, 'Server Error', methodError, {
+											url:url, params:params, methodName:methodName, result:methodResponse.body
+										})(asyncCallback);
+									}catch(methodResponseError){
+										return itemError(500, 'Server Error', methodError, {
+											url:url, params:params, methodName:methodName, result:""
+										})(asyncCallback);
+									}
 								}else{
 									var result = {};
 
