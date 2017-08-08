@@ -35,6 +35,8 @@ function AsyncItem(defaults, _childProcess){
 			returnAll = ['undefined', null, false, 'false', 0, '0'].indexOf(params.returnAll) === -1;
 			delete params.returnAll;
 		}
+
+		if(params.hasOwnProperty('browserTimeStamp')) delete params.browserTimeStamp;
 		
 		function createRequest(){
 			request = unirest[method](source);

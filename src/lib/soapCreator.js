@@ -62,6 +62,8 @@ function AsyncItem(defaults, _childProcess){
 								delete params.returnAll;
 							}
 
+							if(params.hasOwnProperty('browserTimeStamp')) delete params.browserTimeStamp;
+
 							soapClient[methodName](params, function soapMathodCallback(methodError, methodResponse) {
 								if(methodError){
 									try{
